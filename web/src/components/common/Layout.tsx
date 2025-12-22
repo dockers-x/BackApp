@@ -34,6 +34,7 @@ function Layout({ children }: LayoutProps) {
     { path: '/servers', label: 'Servers', icon: <ComputerIcon /> },
     { path: '/backup-profiles', label: 'Backup Profiles', icon: <BackupIcon /> },
     { path: '/backup-runs', label: 'Backup Runs', icon: <PlayArrowIcon /> },
+    { path: '/backups', label: 'Backups', icon: <StorageIcon /> },
   ];
 
   const configItems = [
@@ -47,6 +48,7 @@ function Layout({ children }: LayoutProps) {
       '/servers': 'Servers',
       '/backup-profiles': 'Backup Profiles',
       '/backup-runs': 'Backup Runs',
+      '/backups': 'Backups',
       '/storage-locations': 'Storage Locations',
       '/naming-rules': 'Naming Rules',
     };

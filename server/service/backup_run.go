@@ -51,3 +51,27 @@ func ServiceGetBackupFile(fileID uint) (*entity.BackupFile, error) {
 	}
 	return &file, nil
 }
+
+// ServiceDeleteBackupRun deletes a backup run and associated files and logs
+func ServiceDeleteBackupRun(runID uint) error {
+	// Ensure it exists
+	var run entity.BackupRun
+	if err := DB.First(&run, runID).Error; err != nil {
+		return err
+	}
+
+	// Delete dependent records: logs and files
+	if err := DB.Where("backup_run_id = ?", runID).Delete(&entity.BackupRunLog{}).Error; err != nil {
+		return err
+	}
+	if err := DB.Where("backup_run_id = ?", runID).Delete(&entity.BackupFile{}).Error; err != nil {
+		return err
+	}
+
+	// Delete the run itself
+	if err := DB.Delete(&run).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

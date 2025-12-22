@@ -154,8 +154,8 @@ function BackupRunDetail() {
 
   const calculateDuration = () => {
     if (!run) return '-';
-    const startTime = run.start_time || run.started_at || '';
-    const endTime = run.end_time || run.finished_at || '';
+    const startTime = run.start_time || '';
+    const endTime = run.end_time || '';
 
     if (!startTime) return '-';
 

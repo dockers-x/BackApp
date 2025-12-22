@@ -173,7 +173,6 @@ function BackupProfileCard({ profile, onExecute, onDelete, onEdit, onRefresh }: 
                   size="large"
                   startIcon={<PlayArrow />}
                   onClick={() => onExecute(profile.id)}
-                  disabled={!enabled}
                   sx={{ minWidth: 100 }}
                 >
                   Run

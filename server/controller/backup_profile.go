@@ -197,7 +197,8 @@ func handleBackupProfileExecute(c *gin.Context) {
 	// Execute backup in a goroutine to avoid blocking
 	go func() {
 		executor := service.NewBackupExecutor()
-		if err := executor.ExecuteBackup(uint(id)); err != nil {
+		// Manual execution should bypass the enabled flag
+		if err := executor.ExecuteBackup(uint(id), true); err != nil {
 			// Log error but don't block response
 			// Error will be saved in the backup_run record
 		}

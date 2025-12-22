@@ -8,7 +8,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { backupProfileApi, namingRuleApi, serverApi, storageLocationApi } from '../api';
 import { BackupProfileFormDialog, BackupProfileList } from '../components/backup-profiles';
 import { PrerequisitesAlert } from '../components/common';
@@ -16,7 +15,6 @@ import { TemplateSelectionDialog } from '../components/dialogs';
 import type { BackupProfile, NamingRule, Server, StorageLocation } from '../types';
 
 function BackupProfiles() {
-  const navigate = useNavigate();
   const [profiles, setProfiles] = useState<BackupProfile[]>([]);
   const [showFormDialog, setShowFormDialog] = useState(false);
   const [showTemplateDialog, setShowTemplateDialog] = useState(false);

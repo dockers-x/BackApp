@@ -11,7 +11,8 @@ backapp-server
 # Output of the build process
 /build/
 /server/static/
-backups/
+/server/backups/
+/backups/
 /home/backapp/
 
 # Dependency directories

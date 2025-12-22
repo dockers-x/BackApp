@@ -72,8 +72,8 @@ function BackupProfileDetail() {
             ...file,
             runId: run.id,
             runStatus: run.status,
-            runStartedAt: run.start_time || run.started_at,
-            runFinishedAt: run.end_time || run.finished_at,
+            runStartedAt: run.start_time,
+            runFinishedAt: run.end_time,
           } as ProfileFileRow));
         })
       );
@@ -208,7 +208,7 @@ function BackupProfileDetail() {
                       {runs.length ? `#${runs[0].id}` : 'N/A'}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {runs.length ? formatDate(runs[0].finished_at || runs[0].end_time || runs[0].start_time || runs[0].started_at) : ''}
+                      {runs.length ? formatDate(runs[0].end_time || runs[0].start_time) : ''}
                     </Typography>
                   </Paper>
                 </Grid>

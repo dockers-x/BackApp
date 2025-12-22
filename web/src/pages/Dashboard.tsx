@@ -52,14 +52,30 @@ function Dashboard() {
         namingRuleApi.list(),
       ]);
 
+      const lastSuccessfulRun = (runs || [])
+        .filter((run) => run.status.toLowerCase() === 'success' || run.status.toLowerCase() === 'completed')
+        .sort((a, b) => new Date(b.end_time || '').getTime() - new Date(a.end_time || '').getTime())[0];
+
+      const failedRuns24h = (runs || []).filter((run) => {
+        if (!run.end_time) return false;
+        const endTime = new Date(run.end_time);
+        const now = new Date();
+        const diffHours = (now.getTime() - endTime.getTime()) / (1000 * 60 * 60);
+        return diffHours <= 24 && (run.status.toLowerCase() === 'failed' || run.status.toLowerCase() === 'error');
+      });
+
       setStats({
         servers: servers.length || 0,
         profiles: profiles.length || 0,
-        lastBackup: 'N/A',
-        failed24h: 0,
+        lastBackup: lastSuccessfulRun ? new Date(lastSuccessfulRun.end_time || '').toLocaleString() : 'N/A',
+        failed24h: failedRuns24h.length || 0,
       });
 
-      setRecentRuns(runs.slice(0, 5) || []);
+      setRecentRuns(
+        runs
+          .sort((a, b) => new Date(b.start_time || '').getTime() - new Date(a.start_time || '').getTime())
+          .slice(0, 5) || []
+      );
       setStorageLocations(storageData || []);
       setNamingRules(namingData || []);
     } catch (error) {
@@ -172,7 +188,7 @@ function Dashboard() {
           </Button>
         </Box>
         <Box p={2}>
-          <BackupRunsList runs={recentRuns} compact />
+          <BackupRunsList runs={recentRuns} />
         </Box>
       </Paper>
     </Box>

@@ -76,6 +76,25 @@ func handleBackupRunLogs(c *gin.Context) {
 	c.JSON(http.StatusOK, logs)
 }
 
+func handleBackupRunDelete(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	if err := service.ServiceDeleteBackupRun(uint(id)); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "backup run not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
 func handleBackupFileDownload(c *gin.Context) {
 	fileID, err := strconv.ParseUint(c.Param("fileId"), 10, 32)
 	if err != nil {

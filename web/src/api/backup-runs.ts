@@ -29,4 +29,9 @@ export const backupRunApi = {
   async getLogs(id: number): Promise<BackupRunLog[]> {
     return fetchJSON<BackupRunLog[]>(`/backup-runs/${id}/logs`);
   },
+
+  async delete(id: number): Promise<boolean> {
+    await fetchJSON(`/backup-runs/${id}`, { method: 'DELETE' });
+    return true;
+  },
 };

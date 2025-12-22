@@ -18,7 +18,7 @@ import type { NamingRule } from '../../types';
 const AVAILABLE_TOKENS = [
   { category: 'Date/Time', tokens: ['{YYYY}', '{YY}', '{MM}', '{DD}', '{HH}', '{mm}', '{SS}'] },
   { category: 'Special', tokens: ['{TIMESTAMP}', '{date}', '{time}'] },
-  { category: 'Server/Database', tokens: ['{SERVER_NAME}', '{SERVER_HOST}', '{DATABASE}', '{profile}'] },
+  { category: 'Server/Database', tokens: ['{SERVER_NAME}', '{SERVER_HOST}', '{profile}'] },
 ];
 
 interface NamingRuleFormProps {

@@ -125,5 +125,3 @@ func ServiceUpdateServer(id uint, input *entity.Server) (*entity.Server, error) 
 func ServiceDeleteServer(id uint) error {
 	return DB.Delete(&entity.Server{}, id).Error
 }
-
-// no legacy connection wrappers; use v1 server API only

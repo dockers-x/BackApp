@@ -49,7 +49,7 @@ func translatePattern(pattern, serverName, serverHost, profileName string) strin
 	now := time.Now()
 	result := pattern
 
-	// Legacy format support
+	// Common date/time tokens
 	result = strings.ReplaceAll(result, "{date}", now.Format("2006-01-02"))
 	result = strings.ReplaceAll(result, "{time}", now.Format("15-04-05"))
 	result = strings.ReplaceAll(result, "{profile}", profileName)
@@ -69,7 +69,6 @@ func translatePattern(pattern, serverName, serverHost, profileName string) strin
 	// Server and database variables
 	result = strings.ReplaceAll(result, "{SERVER_NAME}", serverName)
 	result = strings.ReplaceAll(result, "{SERVER_HOST}", serverHost)
-	result = strings.ReplaceAll(result, "{DATABASE}", profileName)
 
 	return result
 }

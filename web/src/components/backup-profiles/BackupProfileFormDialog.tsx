@@ -137,30 +137,15 @@ function BackupProfileFormDialog({
           )}
         </TabPanel>
 
-        {hasProfileId && createdProfileId && (
+        {hasProfileId && (
           <>
             <TabPanel value={tab} index={1}>
-              <BackupProfileCommandsList profileId={createdProfileId} />
+              <BackupProfileCommandsList profileId={isEditMode ? profile!.id : createdProfileId!} />
             </TabPanel>
 
             <TabPanel value={tab} index={2}>
               <BackupProfileFileRulesList
-                profileId={createdProfileId}
-                serverId={profileData?.server_id}
-              />
-            </TabPanel>
-          </>
-        )}
-
-        {isEditMode && profile && (
-          <>
-            <TabPanel value={tab} index={1}>
-              <BackupProfileCommandsList profileId={profile.id} />
-            </TabPanel>
-
-            <TabPanel value={tab} index={2}>
-              <BackupProfileFileRulesList
-                profileId={profile.id}
+                profileId={isEditMode ? profile!.id : createdProfileId!}
                 serverId={profileData?.server_id}
               />
             </TabPanel>
@@ -172,7 +157,7 @@ function BackupProfileFormDialog({
           Cancel
         </Button>
         {!hasProfileId && (
-          <Button onClick={handleSave} variant="contained" disabled={loading}>
+          <Button onClick={() => handleSave(false)} variant="contained" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : 'Create & Continue'}
           </Button>
         )}

@@ -12,17 +12,33 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { BackupRun } from '../../types';
 import { formatDate } from '../../utils/format';
+import { backupProfileApi, backupRunApi } from '../../api';
 
 interface BackupRunsListProps {
   runs: BackupRun[];
-  compact?: boolean;
 }
 
-function BackupRunsList({ runs, compact = false }: BackupRunsListProps) {
+function BackupRunsList({ runs }: BackupRunsListProps) {
   const navigate = useNavigate();
+  const [profilesMap, setProfilesMap] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const profiles = await backupProfileApi.list();
+        const map = Object.fromEntries((profiles || []).map((p) => [p.id, p.name])) as Record<number, string>;
+        setProfilesMap(map);
+      } catch (e) {
+        console.error('Error loading profiles for mapping:', e);
+      }
+    })();
+  }, []);
   const getStatusBadge = (status: string) => {
     const badges: Record<string, { color: string; text: string }> = {
       pending: { color: 'default', text: 'Pending' },
@@ -57,7 +73,7 @@ function BackupRunsList({ runs, compact = false }: BackupRunsListProps) {
 
   if (runs.length === 0) {
     return (
-      <Box textAlign="center" py={compact ? 8 : 12}>
+      <Box textAlign="center" py={12}>
         <PlayArrowIcon sx={{ fontSize: 80, opacity: 0.5, mb: 2 }} />
         <Typography variant="h6" gutterBottom>
           No backup runs yet
@@ -77,19 +93,20 @@ function BackupRunsList({ runs, compact = false }: BackupRunsListProps) {
             <TableCell>ID</TableCell>
             <TableCell>Profile</TableCell>
             <TableCell>Status</TableCell>
-            {!compact && <TableCell>Files</TableCell>}
-            {!compact && <TableCell>Size</TableCell>}
-            {!compact && <TableCell>Started</TableCell>}
-            {!compact && <TableCell>Duration</TableCell>}
+              <TableCell>Files</TableCell>
+              <TableCell>Size</TableCell>
+              <TableCell>Started</TableCell>
+              <TableCell>Duration</TableCell>
+              <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {runs.map((run) => {
-            const startTime = run.start_time || run.started_at || '';
-            const endTime = run.end_time || run.finished_at || '';
+            const startTime = run.start_time || '';
+            const endTime = run.end_time || '';
 
             let duration = '-';
-            if (!compact && startTime) {
+            if (startTime) {
               if (endTime) {
                 const durationMs = new Date(endTime).getTime() - new Date(startTime).getTime();
                 duration = Math.round(durationMs / 1000) + 's';
@@ -115,11 +132,23 @@ function BackupRunsList({ runs, compact = false }: BackupRunsListProps) {
                     #{run.id}
                   </Typography>
                 </TableCell>
-                <TableCell>Profile #{run.backup_profile_id}</TableCell>
+                <TableCell>
+                  <Typography
+                    variant="body2"
+                    color="primary"
+                    sx={{ textDecoration: 'underline', cursor: 'pointer' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/backup-profiles/${run.backup_profile_id}`);
+                    }}
+                  >
+                    {profilesMap[run.backup_profile_id] ?? `Profile #${run.backup_profile_id}`}
+                  </Typography>
+                </TableCell>
                 <TableCell>
                   <Box>
                     {getStatusBadge(run.status)}
-                    {!compact && run.error_message && (
+                    {run.error_message && (
                       <Tooltip title={run.error_message}>
                         <Typography variant="caption" color="error" display="block" mt={0.5}>
                           Error: {run.error_message.substring(0, 50)}...
@@ -128,10 +157,32 @@ function BackupRunsList({ runs, compact = false }: BackupRunsListProps) {
                     )}
                   </Box>
                 </TableCell>
-                {!compact && <TableCell>{run.total_files || 0}</TableCell>}
-                {!compact && <TableCell>{formatSize(run.total_size_bytes || 0)}</TableCell>}
-                {!compact && <TableCell>{formatDate(startTime)}</TableCell>}
-                {!compact && <TableCell>{duration}</TableCell>}
+                <TableCell>{run.total_files || 0}</TableCell>
+                <TableCell>{formatSize(run.total_size_bytes || 0)}</TableCell>
+                <TableCell>{formatDate(startTime)}</TableCell>
+                <TableCell>{duration}</TableCell>
+                <TableCell align="right">
+                  <Tooltip title="Delete backup run">
+                    <IconButton
+                      size="small"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!confirm(`Delete backup run #${run.id}? This will remove its records.`)) return;
+                        try {
+                          await backupRunApi.delete(run.id);
+                          // Optimistically remove row by reloading page; parent list owns data
+                          // If you prefer no reload, lift state update via parent onDeleted callback
+                          navigate(0);
+                        } catch (err) {
+                          console.error('Failed to delete run:', err);
+                        }
+                      }}
+                      aria-label={`Delete run #${run.id}`}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
               </TableRow>
             );
           })}

@@ -54,7 +54,8 @@ func (s *BackupScheduler) ScheduleProfile(profile *entity.BackupProfile) error {
 	// Add new schedule
 	entryID, err := s.cron.AddFunc(profile.ScheduleCron, func() {
 		log.Printf("Running scheduled backup for profile %d: %s", profile.ID, profile.Name)
-		if err := s.executor.ExecuteBackup(profile.ID); err != nil {
+		// Scheduled jobs must respect the enabled flag (allowDisabled=false)
+		if err := s.executor.ExecuteBackup(profile.ID, false); err != nil {
 			log.Printf("Scheduled backup failed for profile %d: %v", profile.ID, err)
 		}
 	})

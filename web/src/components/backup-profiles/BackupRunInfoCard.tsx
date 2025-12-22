@@ -23,14 +23,14 @@ function BackupRunInfoCard({ run, duration }: BackupRunInfoCardProps) {
           <Box display="flex" justifyContent="space-between">
             <Typography color="text.secondary">Started:</Typography>
             <Typography fontWeight="medium">
-              {formatDate(run.start_time || run.started_at || '')}
+              {formatDate(run.start_time || '')}
             </Typography>
           </Box>
           <Box display="flex" justifyContent="space-between">
             <Typography color="text.secondary">Finished:</Typography>
             <Typography fontWeight="medium">
-              {run.end_time || run.finished_at
-                ? formatDate(run.end_time || run.finished_at || '')
+              {run.end_time
+                ? formatDate(run.end_time || '')
                 : '-'}
             </Typography>
           </Box>

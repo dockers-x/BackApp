@@ -8,6 +8,7 @@ import BackupRunDetail from './pages/BackupRunDetail.tsx';
 import BackupProfileDetail from './pages/BackupProfileDetail.tsx';
 import StorageLocations from './pages/StorageLocations.tsx';
 import NamingRules from './pages/NamingRules.tsx';
+import Backups from './pages/Backups.tsx';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/backup-profiles/:id" element={<BackupProfileDetail />} />
           <Route path="/backup-runs" element={<BackupRuns />} />
           <Route path="/backup-runs/:id" element={<BackupRunDetail />} />
+          <Route path="/backups" element={<Backups />} />
           <Route path="/storage-locations" element={<StorageLocations />} />
           <Route path="/naming-rules" element={<NamingRules />} />
         </Routes>

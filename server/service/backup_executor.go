@@ -35,7 +35,7 @@ func (e *BackupExecutor) logToDatabase(runID uint, level, message string) {
 }
 
 // ExecuteBackup executes a backup profile
-func (e *BackupExecutor) ExecuteBackup(profileID uint) error {
+func (e *BackupExecutor) ExecuteBackup(profileID uint, allowDisabled bool) error {
 	// Load the backup profile with all relations
 	var profile entity.BackupProfile
 	if err := DB.Preload("Server").
@@ -47,8 +47,8 @@ func (e *BackupExecutor) ExecuteBackup(profileID uint) error {
 		return fmt.Errorf("failed to load backup profile: %v", err)
 	}
 
-	// Check if profile is enabled
-	if !profile.Enabled {
+	// Check if profile is enabled (unless manually allowed)
+	if !profile.Enabled && !allowDisabled {
 		return fmt.Errorf("backup profile is disabled")
 	}
 
