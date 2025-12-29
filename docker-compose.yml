@@ -5,7 +5,6 @@ services:
     ports:
       - "8080:8080"
     command: [ "-port=8080" ]
-    working_dir: /data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]

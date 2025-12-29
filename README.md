@@ -23,6 +23,25 @@ It is a very lightweight server (under 50 MB) that runs locally (or on a dedicat
 - Schedule backups using cron expressions.
 - Simple and intuitive web interface built with React and Material-UI.
 
+## Configuration
+
+BackApp supports the following command-line flags:
+
+- `-port` - Port to run the server on (default: `8080`)
+- `-db` - SQLite database path (default: `/data/app.db`)
+
+Examples:
+```bash
+# Run on a different port
+./backapp -port=9090
+
+# Use a custom database location
+./backapp -db=/custom/path/app.db
+
+# Combine multiple flags
+./backapp -port=9090 -db=/custom/path/app.db
+```
+
 ## Quick start
 
 ### Native binary (recommended for smaller setups)

@@ -40,10 +40,11 @@ var embeddedTemplates embed.FS
 func main() {
 	// Parse command line flags
 	port := flag.Int("port", 8080, "Port to run the server on")
+	dbPath := flag.String("db", "./app.db", "SQLite database path")
 	flag.Parse()
 
 	// Initialize database via service layer
-	service.InitDB("./app.db")
+	service.InitDB(*dbPath)
 
 	// Initialize and load scheduled backups
 	scheduler := service.GetScheduler()

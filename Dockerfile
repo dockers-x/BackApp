@@ -29,8 +29,10 @@ RUN go build -o /app/app main.go
 # Runtime
 FROM alpine:3.19
 WORKDIR /app
-RUN apk add --no-cache sqlite-libs ca-certificates
+RUN apk add --no-cache sqlite-libs ca-certificates && \
+    mkdir -p /data
 
 COPY --from=builder /app/app /app/app
 EXPOSE 8080
-ENTRYPOINT ["/app/app"]
+VOLUME ["/data"]
+ENTRYPOINT ["/app/app", "--db", "/data/app.db"]
